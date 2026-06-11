@@ -79,12 +79,18 @@ You should see "Success. No rows returned" — that's normal; creating tables do
 ## Step 3 — Connect the app to Supabase (.env.local)
 
 The app needs two values to talk to YOUR Supabase project. They live in `.env.local`,
-which stays on your computer only (it's gitignored).
+which stays on your computer only (it's gitignored). That file is **not** in GitHub —
+after cloning, create it from the template:
+
+```bash
+cp .env.example .env.local
+```
+(On Windows PowerShell: `Copy-Item .env.example .env.local`)
 
 1. In Supabase: **Project Settings** (gear icon) → **API** (or "API Keys" / "Data API")
 2. Copy the **Project URL** (looks like `https://abcdefgh.supabase.co`)
 3. Copy the **anon / public** key (a long string)
-4. Open `.env.local` in this folder and replace the two placeholders:
+4. Open `.env.local` in this folder and replace the two `PASTE-...` placeholders:
 
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://abcdefgh.supabase.co
@@ -95,6 +101,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOi...your-long-key...
 > policies at the bottom of schema.sql) controls what it can actually do. The anon key
 > alone, without a logged-in user, can't read or write anything.
 > **Never** copy the `service_role` key into this file — that one bypasses all security.
+
+> **After saving `.env.local`, restart `npm run dev`** if the dev server is already running —
+> Next.js only reads environment variables at startup.
 
 ---
 
@@ -185,10 +194,16 @@ To stop the server: `Ctrl + C` in the terminal.
 
 1. Go to [vercel.com](https://vercel.com) and sign in **with GitHub**
 2. **Add New → Project** → import `house-cleaning-company-template`
-3. Before clicking Deploy, open **Environment Variables** and add both values from `.env.local`:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   > Vercel never sees your `.env.local` file (it's not on GitHub), so you provide the values here.
+3. Before clicking Deploy, open **Environment Variables** and add both values from `.env.local`
+   (use the **exact same** names and values as your local file):
+
+   | Name | Value source |
+   |------|----------------|
+   | `NEXT_PUBLIC_SUPABASE_URL` | Same as in `.env.local` (Supabase → Settings → API → Project URL) |
+   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Same as in `.env.local` (anon / public key — **not** `service_role`) |
+
+   > Vercel never sees your `.env.local` file (it's not on GitHub), so you paste the values here manually.
+   > Apply them to **Production**, **Preview**, and **Development** so every deploy works.
 4. Click **Deploy**. ~1 minute later you get a live `*.vercel.app` URL.
 
 **Custom domain:** Project → **Settings → Domains** → add your `.com` → follow the DNS
