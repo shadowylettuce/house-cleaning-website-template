@@ -133,6 +133,61 @@ Use Plus Jakarta Sans via Google Fonts. Fall back to `font-sans`.
 - Owner dashboard → desktop first, then adapt down to mobile
 - Worker and client portals → mobile first, then adapt up to desktop
 
+**Brand Assets:**
+Before designing any page, check the `public/brand_assets/` folder.
+If logos, color guides, or photos exist there, use them — do not use placeholders where real assets are available.
+
+---
+
+## Designing from Reference
+
+If Carlos pastes a screenshot or URL of a site he likes, treat it as a reference:
+- Match the layout, spacing, typography, and color **exactly**
+- Swap in Yanette's real content (name, colors, copy) — do not keep the reference's brand
+- Do not "improve" or add to the design — match it first, then Carlos will direct changes
+- After building, take a screenshot, compare visually against the reference, fix every visible mismatch, screenshot again
+- Do at least **2 comparison rounds** — stop only when no visible differences remain or Carlos says to stop
+- When comparing, be specific: *"heading is 32px but reference shows ~24px"*, *"card gap is 16px but should be 24px"*
+- Check: spacing/padding, font size/weight/line-height, colors (exact hex), alignment, border-radius, shadows, image sizing
+
+---
+
+## Screenshot Workflow
+
+Use this workflow any time you need to visually verify a page looks correct.
+
+**Start the dev server first:**
+```bash
+npm run dev   # starts at http://localhost:3000
+```
+If the server is already running, do not start a second instance.
+
+**Take a screenshot:**
+```bash
+node screenshot.mjs http://localhost:3000
+# optional label: node screenshot.mjs http://localhost:3000 hero-section
+```
+Screenshots save automatically to `./temporary-screenshots/screenshot-N.png` (auto-incremented, never overwritten).
+
+**Read the screenshot:**
+After saving, use the Read tool on the PNG file — Claude can see and analyze images directly.
+Compare against the reference or design intent, list specific differences, fix them, screenshot again.
+
+---
+
+## Design Quality Rules — Anti-Generic Guardrails
+
+These rules prevent lazy defaults. Apply them to every page, every component.
+
+- **Colors:** Never use default Tailwind palette (no `indigo-500`, `blue-600`, etc.). Always use the project's defined hex values from the Design System above.
+- **Shadows:** Never use flat `shadow-md`. Use layered, color-tinted shadows with low opacity (e.g. `shadow-[0_4px_24px_rgba(76,175,130,0.10)]`).
+- **Typography:** Never use the same font for headings and body. Plus Jakarta Sans is the body font — pair it with a display weight or a complementary heading treatment.
+- **Gradients:** Where backgrounds need depth, layer multiple radial gradients rather than a flat color.
+- **Animations:** Only animate `transform` and `opacity`. **Never use `transition-all`** — it causes jank. Use spring-style easing (`cubic-bezier(0.34, 1.56, 0.64, 1)`).
+- **Interactive states:** Every clickable element (button, link, card) must have `hover:`, `focus-visible:`, and `active:` states. No exceptions.
+- **Spacing:** Use intentional, consistent spacing tokens — not random Tailwind steps. Establish a rhythm and stick to it.
+- **Depth:** Surfaces should have a layering system (base → elevated → floating) — they should not all sit at the same visual z-plane.
+
 ---
 
 ## Getting business_id — Do It This Way Every Time
@@ -422,6 +477,7 @@ Tone: Warm, trustworthy, personal. Yanette is a real person who cares about her 
 
 ## Build Rules for Claude Code
 
+0. **Before writing any frontend code, invoke the `frontend-design` skill.** No exceptions — every session, every page.
 1. **Read this entire file before writing a single line of code.**
 2. **Comment every non-trivial line of code** — explain what it does in plain English. This is non-negotiable.
 3. One task at a time. Minimum change needed. Do not touch files outside the scope of the current task.
